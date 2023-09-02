@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'accounts',
+    'myadmin',
 
     'rest_framework',
     "corsheaders",
