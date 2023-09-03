@@ -1,4 +1,38 @@
 {% extends 'myadmin/base.html' %}
 {% block content %}
+
+{{ css|safe }}
+{{ js|safe }}
+{{ month_graph.script|safe }}
+{{ year_graph.script|safe }}
+{{today_pie_chart.script|safe}}
+{{yesterday_pie_chart.script|safe}}
+{{past_7_days_graph.script|safe}}
+
 <h1>Hello, World!</h1>
+
+<div class="m-3">
+<div class="mb-5">
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+      <div class="col">
+          {{today_pie_chart.div|safe}}
+      </div>
+      <div class="col">
+        {{yesterday_pie_chart.div|safe}}
+      </div>
+      <div class="col">
+          {{ past_7_days_graph.div|safe }}
+      </div>
+    </div>
+</div>
+
+<div class="mb-3">
+  {{ month_graph.div|safe }}
+</div>
+
+<div class="mb-3">
+{{ year_graph.div|safe }}
+</div>
+</div>
+
 {% endblock %}
