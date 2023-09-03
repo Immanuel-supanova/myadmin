@@ -9,20 +9,16 @@
     <link href="{% static 'accounts/css/style.css' %}" rel="stylesheet">
 </head>
 <body>
-<nav class="py-2 bg-secondary-subtle border-bottom">
-    <div class="container d-flex flex-wrap">
-      <ul class="nav me-auto">
-        <li class="nav-item"><a href="#" class="nav-link text-body text-decoration-none px-2 active" aria-current="page">Home</a></li>
-        <li class="nav-item"><a href="#" class="nav-link text-body text-decoration-none px-2">Features</a></li>
-        <li class="nav-item"><a href="#" class="nav-link text-body text-decoration-none px-2">Pricing</a></li>
-        <li class="nav-item"><a href="#" class="nav-link text-body text-decoration-none px-2">FAQs</a></li>
-        <li class="nav-item"><a href="#" class="nav-link text-body text-decoration-none px-2">About</a></li>
-      </ul>
-      <ul class="nav">
-        <li class="nav-item"><a href="#" class="nav-link text-body text-decoration-none px-2">Login</a></li>
-        <li class="nav-item"><a href="#" class="nav-link text-body text-decoration-none px-2">Sign up</a></li>
-          <li class="nav-item">
-        <div class="dropdown" id="theme-switcher">
+<div class="container-fluid">
+
+    <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+      <a href="{% url 'myadmin:myadmin' %}" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-body text-decoration-none">
+        <span class="fs-4">Myadmin</span>
+      </a>
+
+      <ul class="nav nav-pills">
+        <li><a href="{% url 'logout'%}" class="nav-link text-body text-decoration-none">Logout</a></li>
+            <li> <div class="dropdown" id="theme-switcher">
             <button class="btn btn-outline-body dropdown-toggle" type="button" id="bd-theme" data-bs-toggle="dropdown" aria-expanded="false">
                 <span id="bd-theme-text">Theme</span>
             </button>
@@ -31,23 +27,14 @@
                 <li> <button class="dropdown-item" type="button" data-bs-theme-value="dark">Dark</button> </li>
                 <li> <button class="dropdown-item" type="button" data-bs-theme-value="auto">Auto</button> </li>
             </ul>
-        </div>
-    </li>
+        </div></li>
       </ul>
-    </div>
-  </nav>
-  <header class="py-3 mb-4 border-bottom">
-    <div class="container d-flex flex-wrap justify-content-center">
-      <a href="/" class="d-flex align-items-center mb-3 mb-lg-0 me-lg-auto text-body text-decoration-none">
-        <span class="fs-4">Myadmin</span>
-      </a>
-      <form class="col-12 col-lg-auto mb-3 mb-lg-0">
-        <input type="search" class="form-control" placeholder="Search..." aria-label="Search">
-      </form>
-    </div>
-  </header>
+    </header>
 
-{% block content %}{% endblock %}
+    {% block content %}{% endblock %}
+
+
+  </div>
 <script src="{% static 'myadmin/js/theme.js' %}"></script>
 </body>
 </html>

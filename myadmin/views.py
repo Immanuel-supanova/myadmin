@@ -1,10 +1,14 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import TemplateView
 
 
 # Create your views here.
 
-class MyadminMixin:
+class MyadminMixin(UserPassesTestMixin):
+
+    def test_func(self):
+        return self.request.user.is_superuser
+
     def get_context_data(self, **kwargs):
         # ___________________________________________________________
 
