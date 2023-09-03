@@ -21,10 +21,10 @@ def month_graph():
         addition_data.append(Log.objects.addition_monthly_count(month=m, year=2023))
     change_data = []
     for m in range(1, 13):
-        change_data.append(Log.objects.change_month_count(month=m, year=2023))
+        change_data.append(Log.objects.change_monthly_count(month=m, year=2023))
     deletion_data = []
     for m in range(1, 13):
-        deletion_data.append(Log.objects.deletion_month_count(month=m, year=2023))
+        deletion_data.append(Log.objects.deletion_monthly_count(month=m, year=2023))
 
     # Create a ColumnDataSource for the bar graph
     source = ColumnDataSource(
@@ -47,11 +47,11 @@ def month_graph():
 
     # Create bar glyphs
     p.vbar(x=dodge('months', -0.25, range=p.x_range), top='addition', width=0.2, source=source,
-           color="green", legend_label="Total")
+           color="blue", legend_label="Addition")
     p.vbar(x=dodge('months', 0.0, range=p.x_range), top='change', width=0.2, source=source,
-           color="blue", legend_label="Published")
+           color="green", legend_label="Change")
     p.vbar(x=dodge('months', 0.25, range=p.x_range), top='deletion', width=0.2, source=source,
-           color="red", legend_label="Archived")
+           color="red", legend_label="Deletion")
 
     # Customize the plot
     p.x_range.range_padding = 0.1
@@ -97,11 +97,11 @@ def year_graph():
     # data = y[::-1]
 
     p.vbar(x=dodge('x', -0.25, range=p.x_range), top='addition', width=0.2, source=source,
-           color="green", legend_label="Total")
+           color="blue", legend_label="Addition")
     p.vbar(x=dodge('x', 0.0, range=p.x_range), top='change', width=0.2, source=source,
-           color="blue", legend_label="Published")
+           color="green", legend_label="Change")
     p.vbar(x=dodge('x', 0.25, range=p.x_range), top='deletion', width=0.2, source=source,
-           color="red", legend_label="Archived")
+           color="red", legend_label="Deletion")
 
     script, div = components(p)
 
