@@ -7,7 +7,7 @@ from bokeh.plotting import figure
 from bokeh.transform import dodge, cumsum
 from django.utils import timezone
 
-from .models import Log
+from .query import LogDate, LogMonth, LogYear
 
 now = timezone.now()
 
@@ -18,13 +18,13 @@ def month_graph():
 
     addition_data = []
     for m in range(1, 13):
-        addition_data.append(Log.objects.addition_monthly_count(month=m, year=2023))
+        addition_data.append(LogMonth(month=m, year=2023).addition_monthly_count())
     change_data = []
     for m in range(1, 13):
-        change_data.append(Log.objects.change_monthly_count(month=m, year=2023))
+        change_data.append(LogMonth(month=m, year=2023).change_monthly_count())
     deletion_data = []
     for m in range(1, 13):
-        deletion_data.append(Log.objects.deletion_monthly_count(month=m, year=2023))
+        deletion_data.append(LogMonth(month=m, year=2023).deletion_monthly_count())
 
     # Create a ColumnDataSource for the bar graph
     source = ColumnDataSource(
@@ -72,9 +72,9 @@ def year_graph():
 
     x = x[::-1]
 
-    addition = [Log.objects.addition_yearly_count(year=int(m)) for m in x]
-    change = [Log.objects.change_yearly_count(year=int(m)) for m in x]
-    deletion = [Log.objects.deletion_yearly_count(year=int(m)) for m in x]
+    addition = [LogYear(year=int(m)).addition_yearly_count() for m in x]
+    change = [LogYear(year=int(m)).change_yearly_count() for m in x]
+    deletion = [LogYear(year=int(m)).deletion_yearly_count() for m in x]
 
     source = ColumnDataSource(data=dict(x=x, addition=addition, change=change,
                                         deletion=deletion))
@@ -110,9 +110,9 @@ def year_graph():
 
 def today_pie_chart():
     x = {
-        'Addition': Log.objects.addition_date_count(now.date()),
-        'Change': Log.objects.change_date_count(now.date()),
-        'Deletion': Log.objects.deletion_date_count(now.date()),
+        'Addition': LogDate(now.date()).addition_date_count(),
+        'Change': LogDate(now.date()).change_date_count(),
+        'Deletion': LogDate(now.date()).deletion_date_count(),
     }
 
     # Convert data to DataFrame
@@ -147,9 +147,9 @@ def today_pie_chart():
 def yesterday_pie_chart():
     date = now - timezone.timedelta(days=1)
     x = {
-        'Addition': Log.objects.addition_date_count(date.date()),
-        'Change': Log.objects.change_date_count(date.date()),
-        'Deletion': Log.objects.deletion_date_count(date.date()),
+        'Addition': LogDate(date.date()).addition_date_count(),
+        'Change': LogDate(date.date()).change_date_count(),
+        'Deletion': LogDate(date.date()).deletion_date_count(),
     }
 
     # Convert data to DataFrame
@@ -194,7 +194,7 @@ def past_7_days_graph():
 
     for d in week:
         y.append(
-            Log.objects.date_count(d)
+            LogDate(d).date_count()
         )
 
     x = x[::-1]
