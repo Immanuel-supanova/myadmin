@@ -1,6 +1,8 @@
 from bokeh.resources import INLINE
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.contenttypes.models import ContentType
+from django.http import HttpResponseServerError
 from django.utils import timezone
 from django.views.generic import TemplateView, DetailView
 
@@ -21,15 +23,6 @@ class MyadminMixin(UserPassesTestMixin):
     def test_func(self):
         return self.request.user.is_superuser
 
-    def get_context_data(self, **kwargs):
-        # ___________________________________________________________
-
-        context = super().get_context_data(**kwargs)
-
-        context['title'] = self.title
-
-        return context
-
 
 class HomeView(LoginRequiredMixin, MyadminMixin, TemplateView):
     template_name = 'myadmin/home.html'
@@ -39,6 +32,8 @@ class HomeView(LoginRequiredMixin, MyadminMixin, TemplateView):
         # ___________________________________________________________
 
         context = super().get_context_data(**kwargs)
+
+        context['title'] = self.title
 
         context['year_graph'] = LogGraph(year=now.year).past_years(10)
         context['month_graph'] = LogGraph(year=now.year).year_graph()
@@ -51,43 +46,60 @@ class HomeView(LoginRequiredMixin, MyadminMixin, TemplateView):
         return context
 
 
-class AccountAppView(LoginRequiredMixin, MyadminMixin, TemplateView):
+class AppView(LoginRequiredMixin, MyadminMixin, TemplateView):
     template_name = 'myadmin/home.html'
-    title = 'myadmin|Account'
 
     def get_context_data(self, **kwargs):
         # ___________________________________________________________
 
         context = super().get_context_data(**kwargs)
 
-        context['year_graph'] = LogAppGraph(year=now.year, app="accounts").past_years(10)
-        context['month_graph'] = LogAppGraph(year=now.year, app="accounts").year_graph()
-        context['today_pie_chart'] = LogAppGraph(date=now.date(), app="accounts").date_pie_chart(day="today")
+        app = self.kwargs['app']
+
+        context['title'] = f'myadmin|{app}'
+
+        con = ContentType.objects.get(app_label=app)
+
+        if not con:
+            raise HttpResponseServerError(f"There is no app called {app}")
+
+        context['year_graph'] = LogAppGraph(year=now.year, app=app).past_years(10)
+        context['month_graph'] = LogAppGraph(year=now.year, app=app).year_graph()
+        context['today_pie_chart'] = LogAppGraph(date=now.date(), app=app).date_pie_chart(day="today")
         context['yesterday_pie_chart'] = LogAppGraph(date=now - timezone.timedelta(days=1),
-                                                     app="accounts").date_pie_chart(day="yesterday")
-        context['past_7_days_graph'] = LogAppGraph(date=now.date(), app="accounts").past_days_graph(7)
+                                                     app=app).date_pie_chart(day="yesterday")
+        context['past_7_days_graph'] = LogAppGraph(date=now.date(), app=app).past_days_graph(7)
 
         context['css'] = css_resources
         context['js'] = js_resources
         return context
 
 
-class UserModelView(LoginRequiredMixin, MyadminMixin, TemplateView):
+class AppModelView(LoginRequiredMixin, MyadminMixin, TemplateView):
     template_name = 'myadmin/home.html'
-    title = 'myadmin|Account|User'
 
     def get_context_data(self, **kwargs):
         # ___________________________________________________________
 
         context = super().get_context_data(**kwargs)
 
-        context['year_graph'] = LogModelGraph(year=now.year, app="accounts", model='user').past_years(10)
-        context['month_graph'] = LogModelGraph(year=now.year, app="accounts", model='user').year_graph()
-        context['today_pie_chart'] = LogModelGraph(date=now.date(), app="accounts", model='user').date_pie_chart(
+        app = self.kwargs['app']
+        model = self.kwargs['model']
+
+        context['title'] = f'myadmin|{app}|{model}'
+
+        con = ContentType.objects.get(app_label=app, model=model)
+
+        if not con:
+            raise HttpResponseServerError(f"There is no app called {app}")
+
+        context['year_graph'] = LogModelGraph(year=now.year, app=app, model=model).past_years(10)
+        context['month_graph'] = LogModelGraph(year=now.year, app=app, model=model).year_graph()
+        context['today_pie_chart'] = LogModelGraph(date=now.date(), app=app, model=model).date_pie_chart(
             day="today")
         context['yesterday_pie_chart'] = LogModelGraph(date=now - timezone.timedelta(days=1),
-                                                       app="accounts", model='user').date_pie_chart(day="yesterday")
-        context['past_7_days_graph'] = LogModelGraph(date=now.date(), app="accounts", model='user').past_days_graph(7)
+                                                       app=app, model=model).date_pie_chart(day="yesterday")
+        context['past_7_days_graph'] = LogModelGraph(date=now.date(), app=app, model=model).past_days_graph(7)
 
         context['css'] = css_resources
         context['js'] = js_resources
@@ -103,6 +115,8 @@ class UserModelDetailView(LoginRequiredMixin, MyadminMixin, DetailView):
         # ___________________________________________________________
 
         context = super().get_context_data(**kwargs)
+
+        context['title'] = self.title
 
         context['year_graph'] = LogUserGraph(year=now.year, pk=self.object.id).past_years(10)
         context['month_graph'] = LogUserGraph(year=now.year, pk=self.object.id).year_graph()
