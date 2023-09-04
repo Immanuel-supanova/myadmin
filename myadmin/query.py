@@ -862,6 +862,7 @@ class LogModelDate:
 
 class LogUser:
     """"""
+
     def __init__(self, user):
         self.user = user
 
@@ -1017,3 +1018,31 @@ class LogUserDate:
     def deletion_date_count(self):
         count = LogEntry.objects.filter(action_time__date=self.date, user=self.user, action_flag=3).count()
         return count
+
+
+class Content:
+
+    @staticmethod
+    def applications():
+        content = ContentType.objects.all()
+        app = []
+        apps = []
+
+        for con in content:
+            app.append(con.app_label)
+
+        for con in app:
+            if con not in apps:
+                apps.append(con)
+
+        return apps
+
+    @staticmethod
+    def models():
+        content = ContentType.objects.all()
+        app = []
+
+        for con in content:
+            app.append({str(con.app_label): str(con.model)})
+
+        return app

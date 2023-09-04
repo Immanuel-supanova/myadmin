@@ -17,6 +17,30 @@
       </a>
 
       <ul class="nav nav-pills">
+
+          <li class="dropdown">
+          <a class="nav-link dropdown-toggle text-body text-decoration-none" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Applications
+          </a>
+          <ul class="dropdown-menu">
+              {% for app in applications %}
+                <li><a class="dropdown-item" href="{% url 'myadmin:accounts_app' app %}">{{app}}</a></li>
+                {% endfor %}
+          </ul>
+        </li>
+
+          <li class="dropdown">
+          <a class="nav-link dropdown-toggle text-body text-decoration-none" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Models
+          </a>
+          <ul class="dropdown-menu">
+              {% for con in models %}
+                {% for app, model in con.items %}
+                <li><a class="dropdown-item" href="{% url 'myadmin:accounts_model' app model%}">{{model}}</a></li>
+                {% endfor %}
+                {% endfor %}
+          </ul>
+        </li>
         <li><a href="{% url 'logout'%}" class="nav-link text-body text-decoration-none">Logout</a></li>
             <li> <div class="dropdown" id="theme-switcher">
             <button class="btn btn-outline-body dropdown-toggle" type="button" id="bd-theme" data-bs-toggle="dropdown" aria-expanded="false">

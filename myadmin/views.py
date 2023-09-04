@@ -7,6 +7,7 @@ from django.utils import timezone
 from django.views.generic import TemplateView, DetailView
 
 from myadmin.graphs import LogGraph, LogAppGraph, LogUserGraph, LogModelGraph
+from myadmin.query import Content
 
 js_resources = INLINE.render_js()
 css_resources = INLINE.render_css()
@@ -22,6 +23,16 @@ class MyadminMixin(UserPassesTestMixin):
 
     def test_func(self):
         return self.request.user.is_superuser
+
+    def get_context_data(self, **kwargs):
+        # ___________________________________________________________
+
+        context = super().get_context_data(**kwargs)
+
+        context['applications'] = Content.applications()
+        context['models'] = Content.models()
+
+        return context
 
 
 class HomeView(LoginRequiredMixin, MyadminMixin, TemplateView):
