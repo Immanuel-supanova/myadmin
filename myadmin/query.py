@@ -576,7 +576,7 @@ class LogAppDate:
         log = []
 
         for k in list1:
-            log.append(LogEntry.objects.filter(action_time__year=self.date, content_type=k, action_flag=2).count())
+            log.append(LogEntry.objects.filter(action_time__date=self.date, content_type=k, action_flag=2).count())
 
         arr = np.array(log)
 
@@ -610,7 +610,7 @@ class LogAppDate:
         log = []
 
         for k in list1:
-            log.append(LogEntry.objects.filter(action_time__year=self.date, content_type=k, action_flag=3).count())
+            log.append(LogEntry.objects.filter(action_time__date=self.date, content_type=k, action_flag=3).count())
 
         arr = np.array(log)
 
