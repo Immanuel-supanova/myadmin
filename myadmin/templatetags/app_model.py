@@ -18,4 +18,5 @@ def model_graph(app, model):
                 day="today"), f'yesterday_pie_chart': LogModelGraph(date=now - timezone.timedelta(days=1),
                                                                     app=app, model=model).date_pie_chart(
             day="yesterday"), f'past_7_days_graph': LogModelGraph(date=now.date(), app=app,
-                                                                  model=model).past_days_graph(7)}
+                                                                  model=model).past_days_graph(7),
+            'model': model}

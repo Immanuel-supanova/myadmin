@@ -6,7 +6,7 @@ from django.http import HttpResponseServerError
 from django.utils import timezone
 from django.views.generic import TemplateView, DetailView
 
-from myadmin.graphs import LogGraph, LogAppGraph, LogUserGraph, LogModelGraph
+from myadmin.graphs import LogGraph, LogAppGraph, LogUserGraph
 from myadmin.query import Content
 
 js_resources = INLINE.render_js()
@@ -37,7 +37,7 @@ class MyadminMixin(UserPassesTestMixin):
 
 class HomeView(LoginRequiredMixin, MyadminMixin, TemplateView):
     template_name = 'myadmin/home.html'
-    title = 'myadmin|home'
+    title = 'myadmin'
 
     def get_context_data(self, **kwargs):
         # ___________________________________________________________
@@ -58,7 +58,7 @@ class HomeView(LoginRequiredMixin, MyadminMixin, TemplateView):
 
 
 class AppView(LoginRequiredMixin, MyadminMixin, TemplateView):
-    template_name = 'myadmin/home.html'
+    template_name = 'myadmin/app_model.html'
 
     def get_context_data(self, **kwargs):
         # ___________________________________________________________
@@ -83,26 +83,6 @@ class AppView(LoginRequiredMixin, MyadminMixin, TemplateView):
         context['yesterday_pie_chart'] = LogAppGraph(date=now - timezone.timedelta(days=1),
                                                      app=app).date_pie_chart(day="yesterday")
         context['past_7_days_graph'] = LogAppGraph(date=now.date(), app=app).past_days_graph(7)
-
-        context['css'] = css_resources
-        context['js'] = js_resources
-        return context
-
-
-class AppModelView(LoginRequiredMixin, MyadminMixin, TemplateView):
-    template_name = 'myadmin/app_model.html'
-
-    def get_context_data(self, **kwargs):
-        # ___________________________________________________________
-
-        context = super().get_context_data(**kwargs)
-
-        app = self.kwargs['app']
-        model = self.kwargs['model']
-
-        context['title'] = f'myadmin|{app}|{model}'
-        context['app'] = app
-        context['model'] = model
 
         context['css'] = css_resources
         context['js'] = js_resources

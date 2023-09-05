@@ -11,15 +11,15 @@
 <body>
 <div class="container-fluid">
 
-    <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
-      <a href="{% url 'myadmin:myadmin' %}" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-body text-decoration-none">
+    <header class="d-flex flex-wrap fixed-top justify-content-center py-3 border-bottom bg-dark">
+      <a href="{% url 'myadmin:myadmin' %}" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-bg-dark text-decoration-none">
         <span class="fs-4">Myadmin</span>
       </a>
 
       <ul class="nav nav-pills">
 
           <li class="dropdown">
-          <a class="nav-link dropdown-toggle text-body text-decoration-none" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <a class="nav-link dropdown-toggle text-bg-dark text-decoration-none" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             Applications
           </a>
           <ul class="dropdown-menu">
@@ -29,23 +29,13 @@
           </ul>
         </li>
 
-          <li class="dropdown">
-          <a class="nav-link dropdown-toggle text-body text-decoration-none" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Models
-          </a>
-          <ul class="dropdown-menu">
-              {% for con in models %}
-                {% for app, model in con.items %}
-                <li><a class="dropdown-item" href="{% url 'myadmin:myadmin_app_model' app model %}">{{model}}</a></li>
-                {% endfor %}
-                {% endfor %}
-          </ul>
-        </li>
-        <li><a href="{% url 'logout'%}" class="nav-link text-body text-decoration-none">Logout</a></li>
+          {% block nav %}{% endblock %}
+
+        <li><a href="{% url 'logout'%}" class="nav-link text-bg-dark text-decoration-none">Logout</a></li>
             <li> <div class="dropdown" id="theme-switcher">
-            <button class="btn btn-outline-body dropdown-toggle" type="button" id="bd-theme" data-bs-toggle="dropdown" aria-expanded="false">
+            <a class="nav-link dropdown-toggle text-bg-dark text-decoration-none" href="#" role="button" id="bd-theme" data-bs-toggle="dropdown" aria-expanded="false">
                 <span id="bd-theme-text">Theme</span>
-            </button>
+            </a>
             <ul class="dropdown-menu" aria-labelledby="bd-theme">
                 <li> <button class="dropdown-item" type="button" data-bs-theme-value="light">Light</button></li>
                 <li> <button class="dropdown-item" type="button" data-bs-theme-value="dark">Dark</button> </li>
