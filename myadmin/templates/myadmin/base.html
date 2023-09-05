@@ -24,7 +24,7 @@
           </a>
           <ul class="dropdown-menu">
               {% for app in applications %}
-                <li><a class="dropdown-item" href="{% url 'myadmin:accounts_app' app %}">{{app}}</a></li>
+                <li><a class="dropdown-item" href="{% url 'myadmin:myadmin_app' app %}">{{app}}</a></li>
                 {% endfor %}
           </ul>
         </li>
@@ -36,7 +36,7 @@
           <ul class="dropdown-menu">
               {% for con in models %}
                 {% for app, model in con.items %}
-                <li><a class="dropdown-item" href="{% url 'myadmin:accounts_model' app model%}">{{model}}</a></li>
+                <li><a class="dropdown-item" href="{% url 'myadmin:myadmin_app_model' app model %}">{{model}}</a></li>
                 {% endfor %}
                 {% endfor %}
           </ul>

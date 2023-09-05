@@ -1024,7 +1024,8 @@ class Content:
 
     @staticmethod
     def applications():
-        content = ContentType.objects.all()
+        content = ContentType.objects.exclude(app_label='admin').exclude(app_label='sessions').exclude(
+            app_label='contenttypes')
         app = []
         apps = []
 
@@ -1039,7 +1040,8 @@ class Content:
 
     @staticmethod
     def models():
-        content = ContentType.objects.all()
+        content = ContentType.objects.exclude(app_label='admin').exclude(app_label='sessions').exclude(
+            app_label='contenttypes')
         app = []
 
         for con in content:

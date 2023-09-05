@@ -69,10 +69,13 @@ class AppView(LoginRequiredMixin, MyadminMixin, TemplateView):
 
         context['title'] = f'myadmin|{app}'
 
-        con = ContentType.objects.get(app_label=app)
+        con = ContentType.objects.filter(app_label=app)
 
         if not con:
             raise HttpResponseServerError(f"There is no app called {app}")
+
+        context['app'] = app
+        context['content'] = con
 
         context['year_graph'] = LogAppGraph(year=now.year, app=app).past_years(10)
         context['month_graph'] = LogAppGraph(year=now.year, app=app).year_graph()
@@ -87,7 +90,7 @@ class AppView(LoginRequiredMixin, MyadminMixin, TemplateView):
 
 
 class AppModelView(LoginRequiredMixin, MyadminMixin, TemplateView):
-    template_name = 'myadmin/home.html'
+    template_name = 'myadmin/app_model.html'
 
     def get_context_data(self, **kwargs):
         # ___________________________________________________________
@@ -98,19 +101,8 @@ class AppModelView(LoginRequiredMixin, MyadminMixin, TemplateView):
         model = self.kwargs['model']
 
         context['title'] = f'myadmin|{app}|{model}'
-
-        con = ContentType.objects.get(app_label=app, model=model)
-
-        if not con:
-            raise HttpResponseServerError(f"There is no app called {app}")
-
-        context['year_graph'] = LogModelGraph(year=now.year, app=app, model=model).past_years(10)
-        context['month_graph'] = LogModelGraph(year=now.year, app=app, model=model).year_graph()
-        context['today_pie_chart'] = LogModelGraph(date=now.date(), app=app, model=model).date_pie_chart(
-            day="today")
-        context['yesterday_pie_chart'] = LogModelGraph(date=now - timezone.timedelta(days=1),
-                                                       app=app, model=model).date_pie_chart(day="yesterday")
-        context['past_7_days_graph'] = LogModelGraph(date=now.date(), app=app, model=model).past_days_graph(7)
+        context['app'] = app
+        context['model'] = model
 
         context['css'] = css_resources
         context['js'] = js_resources
