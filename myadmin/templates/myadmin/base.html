@@ -1,0 +1,67 @@
+<!doctype html>
+{% load static %}
+<html lang="en" data-bs-theme="auto">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>{% block title %}{{title}}{% endblock %}</title>
+    <script defer="defer" src="{% static 'myadmin/js/script.js' %}"></script>
+    <link href="{% static 'accounts/css/style.css' %}" rel="stylesheet">
+</head>
+<body>
+<div class="container-fluid">
+
+        <nav class="navbar navbar-expand-md navbar-dark justify-content-center fixed-top py-3 border-bottom bg-dark">
+  <div class="container-fluid">
+
+      <a href="{% url 'myadmin:myadmin' %}" class="nav-brand text-bg-dark text-decoration-none me-5">
+        <span class="fs-4">Myadmin</span>
+      </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+
+
+      <ul class="navbar-nav me-auto mb-2 mb-md-0">
+
+          <li class="dropdown">
+          <a class="nav-link dropdown-toggle text-bg-dark text-decoration-none" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Applications
+          </a>
+          <ul class="dropdown-menu">
+              {% for app in applications %}
+                <li><a class="dropdown-item" href="{% url 'myadmin:myadmin_app' app %}">{{app}}</a></li>
+                {% endfor %}
+          </ul>
+        </li>
+
+          {% block nav %}{% endblock %}
+
+        <li><a href="{% url 'logout'%}" class="nav-link text-bg-dark text-decoration-none">Logout</a></li>
+          <li><a href="{% url 'myadmin:user_model' user.id %}" class="nav-link text-bg-dark text-decoration-none">Analytics</a></li>
+
+            <li> <div class="dropdown" id="theme-switcher">
+            <a class="nav-link dropdown-toggle text-bg-dark text-decoration-none" href="#" role="button" id="bd-theme" data-bs-toggle="dropdown" aria-expanded="false">
+                <span id="bd-theme-text">Theme</span>
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="bd-theme">
+                <li> <button class="dropdown-item" type="button" data-bs-theme-value="light">Light</button></li>
+                <li> <button class="dropdown-item" type="button" data-bs-theme-value="dark">Dark</button> </li>
+                <li> <button class="dropdown-item" type="button" data-bs-theme-value="auto">Auto</button> </li>
+            </ul>
+        </div></li>
+      </ul>
+            </div>
+  </div>
+        </nav>
+
+    {% block content %}{% endblock %}
+
+
+  </div>
+<script src="{% static 'myadmin/js/theme.js' %}"></script>
+</body>
+</html>

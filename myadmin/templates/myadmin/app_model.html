@@ -1,0 +1,72 @@
+{% extends 'myadmin/base.html' %}
+{% load app_model %}
+
+{% block nav %}
+
+<li class="dropdown">
+    <a class="nav-link dropdown-toggle text-bg-dark text-decoration-none" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Models
+    </a>
+    <ul class="dropdown-menu">
+        {% for con in models %}
+            {% for app2, model in con.items %}
+                {% if app2 == app %}
+                    <li><a aria-current="page" class="dropdown-item" href="#{{model}}">{{model}}</a></li>
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+          </ul>
+        </li>
+
+{% endblock %}
+
+
+{% block content %}
+
+{{ css|safe }}
+{{ js|safe }}
+{{ month_graph.script|safe }}
+{{ year_graph.script|safe }}
+{{today_pie_chart.script|safe}}
+{{yesterday_pie_chart.script|safe}}
+{{past_7_days_graph.script|safe}}
+
+<div class="container-fluid mt-5 pt-5">
+<div class="pt-5">
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+      <div class="col">
+          {{today_pie_chart.div|safe}}
+      </div>
+      <div class="col">
+        {{yesterday_pie_chart.div|safe}}
+      </div>
+      <div class="col">
+          {{ past_7_days_graph.div|safe }}
+      </div>
+    </div>
+</div>
+
+<div class="pt-5">
+  {{ month_graph.div|safe }}
+</div>
+
+<div class="pt-5">
+{{ year_graph.div|safe }}
+</div>
+</div>
+<hr>
+{% for con in models %}
+    {% for app2, model in con.items %}
+        {% if app2 == app %}
+
+            <div id="{{model}}">
+                {% model_graph app model %}
+            </div>
+            <hr>
+
+        {% endif %}
+    {% endfor %}
+{% endfor %}
+
+{% endblock %}
+
