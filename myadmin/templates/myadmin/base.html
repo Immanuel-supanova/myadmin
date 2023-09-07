@@ -40,7 +40,6 @@
 
           {% block nav %}{% endblock %}
 
-        <li><a href="{% url 'logout'%}" class="nav-link text-bg-dark text-decoration-none">Logout</a></li>
           <li><a href="{% url 'myadmin:user_model' user.id %}" class="nav-link text-bg-dark text-decoration-none">Analytics</a></li>
 
             <li> <div class="dropdown" id="theme-switcher">
