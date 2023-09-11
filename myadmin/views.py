@@ -1,13 +1,15 @@
 from bokeh.resources import INLINE
+from django.contrib.admin.models import LogEntry
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.contenttypes.models import ContentType
+from django.core.paginator import Paginator
 from django.http import HttpResponseServerError
 from django.utils import timezone
 from django.views.generic import TemplateView, DetailView
 
 from myadmin.graphs import LogGraph, LogAppGraph, LogUserGraph
-from myadmin.query import Content
+from myadmin.query import Content, LogUser, LogApp
 
 js_resources = INLINE.render_js()
 css_resources = INLINE.render_css()
@@ -52,6 +54,15 @@ class HomeView(LoginRequiredMixin, MyadminMixin, TemplateView):
         context['yesterday_pie_chart'] = LogGraph(date=now - timezone.timedelta(days=1)).date_pie_chart(day="yesterday")
         context['past_7_days_graph'] = LogGraph(date=now.date()).past_days_graph(7)
 
+        logentry = LogEntry.objects.all()
+
+        paginator = Paginator(logentry, 10)
+
+        page_number = self.request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        context['logentry'] = page_obj
+
         context['css'] = css_resources
         context['js'] = js_resources
         return context
@@ -84,13 +95,21 @@ class AppView(LoginRequiredMixin, MyadminMixin, TemplateView):
                                                      app=app).date_pie_chart(day="yesterday")
         context['past_7_days_graph'] = LogAppGraph(date=now.date(), app=app).past_days_graph(7)
 
+        app_logs = LogApp(app=app).app_list()
+        paginator = Paginator(app_logs, 10)
+
+        page_number = self.request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        context['app_logs'] = page_obj
+
         context['css'] = css_resources
         context['js'] = js_resources
         return context
 
 
 class UserModelDetailView(LoginRequiredMixin, MyadminMixin, DetailView):
-    template_name = 'myadmin/home.html'
+    template_name = 'myadmin/user_model.html'
     title = 'myadmin|User'
     model = User
 
@@ -107,6 +126,15 @@ class UserModelDetailView(LoginRequiredMixin, MyadminMixin, DetailView):
         context['yesterday_pie_chart'] = LogUserGraph(date=now - timezone.timedelta(days=1),
                                                       pk=self.object.id).date_pie_chart(day="yesterday")
         context['past_7_days_graph'] = LogUserGraph(date=now.date(), pk=self.object.id).past_days_graph(7)
+
+        user_logs = LogUser(user=self.object).user_list()
+
+        paginator = Paginator(user_logs, 10)
+
+        page_number = self.request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        context['user_logs'] = page_obj
 
         context['css'] = css_resources
         context['js'] = js_resources
