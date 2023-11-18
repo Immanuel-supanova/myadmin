@@ -1,5 +1,4 @@
 from django import template
-from django.contrib.contenttypes.models import ContentType
 from django.utils import timezone
 
 from myadmin.graphs import LogModelGraph

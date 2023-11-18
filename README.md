@@ -29,4 +29,5 @@ In the root urls.py file add the following paths:
 urlpatterns = [
     path('myadmin/', include('myadmin.urls')),
 ]
+
 ```

@@ -1,0 +1,103 @@
+{% extends 'myadmin/base.html' %}
+{% block content %}
+{% load static %}
+
+{{ css|safe }}
+{{ js|safe }}
+{{ month_graph.script|safe }}
+{{ year_graph.script|safe }}
+{{today_pie_chart.script|safe}}
+{{yesterday_pie_chart.script|safe}}
+{{past_7_days_graph.script|safe}}
+
+<div class="container-fluid mt-5 pt-5">
+<div class="pt-2">
+
+    <div class="text-center">
+        <p class="fs-3">Profile</p>
+        <br>
+        <a href="{% url 'myadmin:profile_change' profile.id %}">
+            <img alt="..." style="border-radius: 50%; width: 150px; height: 150px; " src="{% if profile.profile_img %}{{ profile.profile_img.url }}{% else %}{% static 'myadmin/image/default.jpg' %}{% endif %}">
+        </a>
+        <br>
+        <br>
+        {% if profile.bio %}
+        {{ profile.bio|safe }}
+        {% else %}
+        <p>No bio</p>
+        {% endif %}
+
+        <br><br>
+        <p><small>Joined In: {{ profile.user.date_joined }}</small></p>
+    </div>
+
+    <hr>
+
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+      <div class="col">
+          {{today_pie_chart.div|safe}}
+      </div>
+      <div class="col">
+        {{yesterday_pie_chart.div|safe}}
+      </div>
+      <div class="col">
+          {{ past_7_days_graph.div|safe }}
+      </div>
+    </div>
+</div>
+
+<div class="pt-2">
+  {{ month_graph.div|safe }}
+</div>
+
+<div class="pt-2">
+{{ year_graph.div|safe }}
+</div>
+    <hr>
+    <div class="table-responsive pt-2">
+        <p class="fs-2"> Activities</p>
+        <table class="table table-bordered table-hover">
+    <thead>
+    <tr>
+        <th scope="col">Entity</th>
+        <th scope="col">Object</th>
+        <th scope="col">Action</th>
+        <th scope="col">Time</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for log in user_logs %}
+    <tr>
+        <td>{{ log.content_type }}</td>
+        <td>{{ log.object_id }}</td>
+        <td> {% if log.action_flag == 1 %} Created {% endif %} {% if log.action_flag == 2 %} Changed {% endif %} {% if log.action_flag == 3 %} Deleted {% endif %} </td>
+        <td>{{ log.action_time }}</td>
+    </tr> {% endfor %}
+    </tbody>
+</table>
+    <ul class="pagination">
+        {% for log in user_logs %}
+        {% if log.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?page=1">&laquo; first</a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" href="?page={{ log.previous_page_number }}">previous</a>
+        </li>
+        {% endif %}
+        {% if log.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ log.next_page_number }}">next</a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" href="?page={{ log.paginator.num_pages }}">last &raquo;</a>
+        </li>
+        {% endif %}
+        {% endfor %}
+    </ul>
+</div>
+</div>
+
+
+
+{% endblock %}
