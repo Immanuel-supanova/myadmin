@@ -1,0 +1,43 @@
+{% extends 'myadmin/base.html' %}
+{% block content %}
+<div class="container-fluid mt-5 pt-5">
+<div class="pt-2">
+{% if user.id != object.user.id %}
+
+<div class="text-center">
+    <h1 style="font-size:64px;"> 403 </h1>
+    <p style="font-size:48px">Access Forbidden</p>
+</div>
+
+{% else %}
+
+<div class="mt-5">
+    <form enctype='multipart/form-data' method="POST">
+        {% csrf_token %} {{ form.media }}
+        <div class="form-outline mb-4">
+            <div class="row">
+                <div class="col-2">
+                    <p class="form-label">{{ form.profile_img.label }}:</p>
+                </div>
+                <div class="col">
+                    {{form.profile_img}}
+                </div>
+            </div>
+        </div>
+        <div class="form-outline mb-4">
+            <div class="row">
+                <div class="col-2">
+                    <p class="form-label">{{ form.bio.label }}:</p>
+                </div>
+                <div class="col"> {{form.bio}} </div>
+            </div>
+        </div>
+        <div class="text-center">
+        <button class="btn btn-primary"> Submit</button>
+        </div>
+    </form>
+</div>
+{% endif %}
+</div>
+</div>
+{% endblock %}

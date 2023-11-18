@@ -1,5 +1,6 @@
 {% extends 'myadmin/base.html' %}
 {% block content %}
+{% load static %}
 
 {{ css|safe }}
 {{ js|safe }}
@@ -11,6 +12,27 @@
 
 <div class="container-fluid mt-5 pt-5">
 <div class="pt-2">
+
+    <div class="text-center">
+        <p class="fs-3">Profile</p>
+        <br>
+        <a href="{% url 'myadmin:profile_change' profile.id %}">
+            <img alt="..." style="border-radius: 50%; width: 150px; height: 150px; " src="{% if profile.profile_img %}{{ profile.profile_img.url }}{% else %}{% static 'myadmin/image/default.jpg' %}{% endif %}">
+        </a>
+        <br>
+        <br>
+        {% if profile.bio %}
+        {{ profile.bio|safe }}
+        {% else %}
+        <p>No bio</p>
+        {% endif %}
+
+        <br><br>
+        <p><small>Joined In: {{ profile.user.date_joined }}</small></p>
+    </div>
+
+    <hr>
+
   <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
       <div class="col">
           {{today_pie_chart.div|safe}}
@@ -31,7 +53,9 @@
 <div class="pt-2">
 {{ year_graph.div|safe }}
 </div>
+    <hr>
     <div class="table-responsive pt-2">
+        <p class="fs-2"> Activities</p>
         <table class="table table-bordered table-hover">
     <thead>
     <tr>

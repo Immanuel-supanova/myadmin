@@ -1,14 +1,16 @@
 from bokeh.resources import INLINE
-from django.contrib.admin.models import LogEntry
+from django.contrib.admin.models import LogEntry, CHANGE
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import Paginator
 from django.http import HttpResponseServerError
 from django.utils import timezone
-from django.views.generic import TemplateView, DetailView
+from django.views.generic import TemplateView, DetailView, UpdateView
 
+from myadmin.forms import ProfileForm
 from myadmin.graphs import LogGraph, LogAppGraph, LogUserGraph
+from myadmin.models import Profile
 from myadmin.query import Content, LogUser, LogApp
 
 js_resources = INLINE.render_js()
@@ -35,6 +37,18 @@ class MyadminMixin(UserPassesTestMixin):
         context['models'] = Content.models()
 
         return context
+
+
+class ProfileUpdateMixin(UserPassesTestMixin):
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        LogEntry.objects.log_action(
+            user_id=self.request.user.id,
+            content_type_id=ContentType.objects.get_for_model(self.model).pk,
+            object_id=self.object.pk,
+            object_repr=self.object.user.username,
+            action_flag=CHANGE)
+        return response
 
 
 class HomeView(LoginRequiredMixin, MyadminMixin, TemplateView):
@@ -136,6 +150,16 @@ class UserModelDetailView(LoginRequiredMixin, MyadminMixin, DetailView):
 
         context['user_logs'] = page_obj
 
+        profile = Profile.objects.get(user=self.object.id)
+
+        context['profile'] = profile
+
         context['css'] = css_resources
         context['js'] = js_resources
         return context
+
+
+class ProfileUpdateView(MyadminMixin, ProfileUpdateMixin, UpdateView):
+    model = Profile
+    form_class = ProfileForm
+    template_name = 'myadmin/profile_change.html'
